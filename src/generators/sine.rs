@@ -1,5 +1,7 @@
 use std::f32::consts::PI;
 
+use crate::generators::generator::Generator;
+
 pub struct Sine {
     frequency: f32,
     phase: f32,
@@ -15,7 +17,13 @@ impl Sine {
         }
     }
 
-    pub fn get_next_value(&mut self) -> f32 {
+    pub fn set_frequency(&mut self, frequency: f32) {
+        self.frequency = frequency
+    }
+}
+
+impl Generator for Sine {
+    fn get_next_value(&mut self) -> f32 {
         let phase_increment = 2.0 * PI * self.frequency / self.sample_rate;
         let new_phase = self.phase + phase_increment;
         let next_value = self.phase.sin();
@@ -23,10 +31,6 @@ impl Sine {
         self.phase = new_phase;
 
         next_value
-    }
-
-    pub fn set_frequency(&mut self, frequency: f32) {
-        self.frequency = frequency
     }
 }
 
