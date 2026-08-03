@@ -25,9 +25,9 @@ impl Sine {
 impl Generator for Sine {
     fn get_next_value(&mut self) -> f32 {
         let phase_increment = 2.0 * PI * self.frequency / self.sample_rate;
-        let new_phase = self.phase + phase_increment;
-        let next_value = self.phase.sin();
+        let new_phase = (self.phase + phase_increment) % (2.0 * PI);
 
+        let next_value = self.phase.sin();
         self.phase = new_phase;
 
         next_value
