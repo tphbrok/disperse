@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 use crate::generators::generator::Generator;
 
 pub struct Triangle {
@@ -24,21 +22,17 @@ impl Triangle {
 
 impl Generator for Triangle {
     fn get_next_value(&mut self) -> f32 {
-        let phase_increment = 2.0 * PI * self.frequency / self.sample_rate;
-        let new_phase = (self.phase + phase_increment) % (2.0 * PI);
+        let phase_increment = self.frequency / self.sample_rate;
+        let new_phase = (self.phase + phase_increment) % 1.0;
 
-        let normalized_phase = self.phase / PI;
-
-        let next_value = if normalized_phase >= 0.0 && normalized_phase < 0.5 {
-            normalized_phase
-        } else if normalized_phase >= 1.5 && normalized_phase < 2.0 {
-            normalized_phase - 2.0
+        let next_value = if self.phase >= 0.0 && self.phase < 0.25 {
+            self.phase
+        } else if self.phase >= 0.75 && self.phase < 1.0 {
+            self.phase - 1.0
         } else {
-            1.0 - normalized_phase
-        } * 2.0;
+            0.5 - self.phase
+        } * 4.0;
         self.phase = new_phase;
-
-        dbg!(next_value);
 
         next_value
     }
@@ -58,19 +52,19 @@ mod tests {
     }
 
     #[test]
-    fn it_generates_correct_values_for_6_digit_precision() {
+    fn it_generates_correct_values() {
         let mut triangle = Triangle::new(44100.0 / 8.0, 44100);
 
         // Skip first value, this is already tested
         triangle.get_next_value();
 
-        assert!((0.5 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((1.0 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((0.5 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((0.0 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((-0.5 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((-1.0 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((-0.5 - triangle.get_next_value()).abs() < 1e-6);
-        assert!((0.0 - triangle.get_next_value()).abs() < 1e-6);
+        assert_eq!(0.5, triangle.get_next_value());
+        assert_eq!(1.0, triangle.get_next_value());
+        assert_eq!(0.5, triangle.get_next_value());
+        assert_eq!(0.0, triangle.get_next_value());
+        assert_eq!(-0.5, triangle.get_next_value());
+        assert_eq!(-1.0, triangle.get_next_value());
+        assert_eq!(-0.5, triangle.get_next_value());
+        assert_eq!(0.0, triangle.get_next_value());
     }
 }
