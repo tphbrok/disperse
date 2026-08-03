@@ -49,15 +49,19 @@ mod tests {
 
     #[test]
     fn it_generates_correct_values_for_6_digit_precision() {
-        let mut sine = Sine::new(44100.0 / 4.0, 44100);
+        let mut sine = Sine::new(44100.0 / 8.0, 44100);
 
         // Skip first value, this is already tested
         sine.get_next_value();
 
         // Testing it this way because f32::sin is non-deterministic, unfortunately
+        assert!((0.7071067 - sine.get_next_value()).abs() < 1e-6);
         assert!((1.0 - sine.get_next_value()).abs() < 1e-6);
+        assert!((0.7071067 - sine.get_next_value()).abs() < 1e-6);
         assert!((0.0 - sine.get_next_value()).abs() < 1e-6);
+        assert!((-0.7071067 - sine.get_next_value()).abs() < 1e-6);
         assert!((-1.0 - sine.get_next_value()).abs() < 1e-6);
+        assert!((-0.7071067 - sine.get_next_value()).abs() < 1e-6);
         assert!((0.0 - sine.get_next_value()).abs() < 1e-6);
     }
 }
