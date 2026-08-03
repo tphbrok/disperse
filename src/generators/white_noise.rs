@@ -9,11 +9,7 @@ impl WhiteNoise {
         WhiteNoise { rng: rng() }
     }
 
-    pub fn get_values(&mut self, count: usize) -> Vec<f32> {
-        let mut result = vec![0.0; count];
-
-        result.fill_with(|| self.rng.random());
-
-        result
+    pub fn get_next_value(&mut self) -> f32 {
+        self.rng.random()
     }
 }
