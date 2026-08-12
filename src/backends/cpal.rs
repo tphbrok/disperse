@@ -14,13 +14,10 @@ pub fn play_samples(samples: Vec<f32>) {
         *samples.get(sample_clock).unwrap()
     };
 
-    dbg!("a");
-
     let stream = device
         .build_output_stream(
             config.into(),
             move |data: &mut [f32], _| {
-                dbg!("b");
                 for frame in data.chunks_mut(channels) {
                     let value = next_value();
 
